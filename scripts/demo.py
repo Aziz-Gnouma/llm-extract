@@ -1,4 +1,4 @@
-"""Try the fine-tuned model on your own sentences (GPU).
+"""Try the fine-tuned model on your own sentences (GPU; falls back to a slow CPU mode).
 
 Prints, for each sentence, the answer of the base model (same prompt, adapter disabled) and the
 answer of the QLoRA model, plus the parsed entities. Touches no split and writes nothing.
@@ -23,6 +23,24 @@ from llmx.inference.parsing import parse_prediction
 from llmx.modeling.loader import load_finetuned, load_tokenizer
 
 
+def _load_model(cfg, adapter: Path):
+    """4-bit on GPU (as in the experiments); full precision on CPU, where 4-bit is unavailable.
+
+    The CPU path applies the same adapter to the unquantised base model: answers are close to,
+    but not guaranteed identical to, the evaluated ones. Use it only for a quick look.
+    """
+    import torch
+
+    if torch.cuda.is_available():
+        return load_finetuned(cfg.model, adapter)
+    from peft import PeftModel
+    from transformers import AutoModelForCausalLM
+
+    print("No GPU: loading the full-precision model on CPU (slow, ~6 GB RAM).", flush=True)
+    base = AutoModelForCausalLM.from_pretrained(cfg.model.name, dtype=torch.float32)
+    return PeftModel.from_pretrained(base, str(adapter))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("sentences", nargs="*")
@@ -39,7 +57,7 @@ def main() -> None:
     cfg = load_config(args.config)
     fields = cfg.data.fields
     tokenizer = load_tokenizer(cfg.model)
-    model = load_finetuned(cfg.model, args.adapter)
+    model = _load_model(cfg, args.adapter)
     model.eval()
 
     def answer(text: str) -> str:
