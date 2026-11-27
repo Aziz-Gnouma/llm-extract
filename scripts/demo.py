@@ -6,6 +6,7 @@ answer of the QLoRA model, plus the parsed entities. Touches no split and writes
     python scripts/demo.py --adapter outputs/qwen1.5b-qlora-r16-e3/adapter \
         "Angela Merkel met Tim Cook at Apple's offices in Cupertino ."
     python scripts/demo.py --adapter ... --interactive      # type sentences, empty line to quit
+    python scripts/demo.py --json "..." "..."  2>/dev/null  # only JSON on stdout (JSON Lines)
 
 Tip: put spaces around punctuation, like the CoNLL training data ("Apple 's", "Paris .").
 """
@@ -14,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from llmx.config import load_config
@@ -36,7 +38,11 @@ def _load_model(cfg, adapter: Path):
     from peft import PeftModel
     from transformers import AutoModelForCausalLM
 
-    print("No GPU: loading the full-precision model on CPU (slow, ~6 GB RAM).", flush=True)
+    print(
+        "No GPU: loading the full-precision model on CPU (slow, ~6 GB RAM).",
+        file=sys.stderr,
+        flush=True,
+    )
     base = AutoModelForCausalLM.from_pretrained(cfg.model.name, dtype=torch.float32)
     return PeftModel.from_pretrained(base, str(adapter))
 
@@ -50,6 +56,11 @@ def main() -> None:
     parser.add_argument("--config", default="configs/base.yaml")
     parser.add_argument("--interactive", action="store_true")
     parser.add_argument("--no-base", action="store_true", help="skip the prompt-only answer")
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print only the fine-tuned model's entities, one JSON object per line (JSON Lines)",
+    )
     args = parser.parse_args()
 
     if not (args.adapter / "adapter_config.json").exists():
@@ -67,6 +78,10 @@ def main() -> None:
         return generate_batch(model, tokenizer, [prompt], cfg.generation.max_new_tokens)[0]
 
     def show(text: str) -> None:
+        if args.json:
+            entities = parse_prediction(answer(text), fields).entities
+            print(json.dumps({"text": text, **entities}, ensure_ascii=False), flush=True)
+            return
         print(f"\n>>> {text}")
         runs = [] if args.no_base else [("base (prompt only)", True)]
         for label, disabled in runs + [("QLoRA", False)]:
