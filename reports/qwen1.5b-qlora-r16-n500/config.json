@@ -1,0 +1,61 @@
+{
+  "run_name": "qwen1.5b-qlora-r16-n500",
+  "seed": 42,
+  "data": {
+    "hf_dataset": "lhoestq/conll2003",
+    "hf_revision": "19edcb426bfd625c275c17b9a99b2239243f4377",
+    "field_map": {
+      "PER": "persons",
+      "ORG": "organizations",
+      "LOC": "locations"
+    },
+    "min_tokens": 4,
+    "n_train": 1500,
+    "n_val": 300,
+    "n_test": 500
+  },
+  "model": {
+    "name": "Qwen/Qwen2.5-1.5B-Instruct",
+    "load_in_4bit": true,
+    "compute_dtype": "float16",
+    "max_seq_len": 512
+  },
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "train": {
+    "epochs": 2,
+    "batch_size": 4,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "warmup_ratio": 0.03,
+    "scheduler": "cosine",
+    "eval_steps": 25,
+    "logging_steps": 5,
+    "save_total_limit": 2,
+    "max_train_examples": 500
+  },
+  "generation": {
+    "max_new_tokens": 128,
+    "batch_size": 16
+  },
+  "baseline": {
+    "few_shot_k": 3
+  },
+  "paths": {
+    "data_dir": "data",
+    "output_dir": "outputs",
+    "reports_dir": "reports"
+  }
+}

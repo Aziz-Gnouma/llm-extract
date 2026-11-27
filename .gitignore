@@ -15,3 +15,6 @@ data/processed/*.jsonl
 reports/smoke/
 reports/smoke_log.txt
 # reports/ IS versioned: metrics, predictions summaries and figures of the runs
+
+# per-sentence predictions contain CoNLL text (same licence reason): kept locally only
+reports/**/predictions.jsonl

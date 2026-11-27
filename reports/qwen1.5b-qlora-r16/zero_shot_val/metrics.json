@@ -1,0 +1,50 @@
+{
+  "n": 300,
+  "json_valid_rate": 0.9966666666666667,
+  "strict_json_rate": 0.0,
+  "schema_valid_rate": 0.9733333333333334,
+  "exact_match": 0.30333333333333334,
+  "hallucination_rate": 0.14661654135338345,
+  "micro": {
+    "precision": 0.6015037593984962,
+    "recall": 0.2807017543859649,
+    "f1": 0.3827751196172249,
+    "support": 570
+  },
+  "per_field": {
+    "persons": {
+      "precision": 0.9,
+      "recall": 0.18672199170124482,
+      "f1": 0.30927835051546393,
+      "support": 241
+    },
+    "organizations": {
+      "precision": 0.5263157894736842,
+      "recall": 0.20833333333333334,
+      "f1": 0.29850746268656714,
+      "support": 144
+    },
+    "locations": {
+      "precision": 0.5345911949685535,
+      "recall": 0.4594594594594595,
+      "f1": 0.4941860465116279,
+      "support": 185
+    }
+  },
+  "micro_f1_ci95": [
+    0.3285870755750274,
+    0.4429223744292237
+  ],
+  "error_summary": {
+    "invalid_json": 1,
+    "hallucination": 39,
+    "wrong_field": 37,
+    "boundary": 6,
+    "spurious": 24,
+    "missed": 368
+  },
+  "system": "zero_shot",
+  "split": "val",
+  "k_shots": 0,
+  "seconds_per_example": 0.18639512012
+}

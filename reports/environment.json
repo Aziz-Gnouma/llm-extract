@@ -1,0 +1,10 @@
+{
+  "python": "3.13.16",
+  "gpu": "Tesla T4",
+  "torch": "2.14.1+cu130",
+  "transformers": "4.57.6",
+  "peft": "0.21.2",
+  "bitsandbytes": "0.50.2",
+  "accelerate": "1.15.0",
+  "datasets": "4.8.5"
+}
