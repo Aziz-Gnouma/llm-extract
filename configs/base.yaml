@@ -1,0 +1,55 @@
+# Single source of truth for every experiment. Change values here, never in code.
+run_name: qwen1.5b-qlora-r16
+seed: 42
+
+data:
+  # Native-parquet copy of CoNLL-2003 (the script-based copies no longer load with datasets>=4).
+  # Tag ids follow the standard order O,B-PER,I-PER,B-ORG,I-ORG,B-LOC,I-LOC,B-MISC,I-MISC
+  # (verified on the first rows). Pinned to a commit for reproducibility.
+  hf_dataset: lhoestq/conll2003
+  hf_revision: 19edcb426bfd625c275c17b9a99b2239243f4377
+  # Entity types kept and the JSON key each one maps to (MISC is dropped: too ambiguous).
+  field_map:
+    PER: persons
+    ORG: organizations
+    LOC: locations
+  min_tokens: 4          # drop trivial lines ("1.", "SOCCER -")
+  n_train: 1500
+  n_val: 300
+  n_test: 500
+
+model:
+  name: Qwen/Qwen2.5-1.5B-Instruct
+  load_in_4bit: true
+  compute_dtype: float16  # T4 has no bfloat16
+  max_seq_len: 512
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  epochs: 2
+  batch_size: 4
+  grad_accum: 4           # effective batch = 16
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  scheduler: cosine
+  eval_steps: 25
+  logging_steps: 5
+  save_total_limit: 2
+  max_train_examples: null  # e.g. 100 / 500 for the "how much data?" ablation
+
+generation:
+  max_new_tokens: 128
+  batch_size: 16
+
+baseline:
+  few_shot_k: 3
+
+paths:
+  data_dir: data
+  output_dir: outputs
+  reports_dir: reports

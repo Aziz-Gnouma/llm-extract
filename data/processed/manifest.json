@@ -1,0 +1,36 @@
+{
+  "source": "lhoestq/conll2003",
+  "revision": "19edcb426bfd625c275c17b9a99b2239243f4377",
+  "splits": {
+    "train": {
+      "n": 1500,
+      "sha256": "b97a278d94d9cae48f7019a7da7d7c9d5e8527dadf0c121565e8ac3d75a593da",
+      "entity_counts": {
+        "persons": 831,
+        "organizations": 747,
+        "locations": 759,
+        "sentences_without_entity": 377
+      }
+    },
+    "val": {
+      "n": 300,
+      "sha256": "65c8b19f6d5be3c37feb58762d9b2f99d892b12f579efcf35c4aada22edde14f",
+      "entity_counts": {
+        "persons": 241,
+        "organizations": 144,
+        "locations": 185,
+        "sentences_without_entity": 63
+      }
+    },
+    "test": {
+      "n": 500,
+      "sha256": "4dbaf1ccbec0b056e461be2bbdda45fde94bd8c3d06fea59c188e39bd2981dbe",
+      "entity_counts": {
+        "persons": 294,
+        "organizations": 295,
+        "locations": 249,
+        "sentences_without_entity": 105
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-extract"
+version = "0.1.0"
+description = "QLoRA fine-tuning of a small open LLM for structured (JSON) entity extraction, compared to a prompt-only baseline."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# GPU / ML stack. torch is NOT listed: use the build preinstalled on Colab/Kaggle
+# (it matches their CUDA driver). Exact resolved versions are logged by the notebook.
+ml = [
+    "transformers>=4.46,<5",
+    "peft>=0.13",
+    "bitsandbytes>=0.44",
+    "accelerate>=1.0",
+    "datasets>=3.0",
+    "tqdm>=4.66",
+]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+llmx = "llmx.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
