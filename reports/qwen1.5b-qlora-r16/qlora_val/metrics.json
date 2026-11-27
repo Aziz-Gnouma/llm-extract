@@ -3,48 +3,48 @@
   "json_valid_rate": 1.0,
   "strict_json_rate": 1.0,
   "schema_valid_rate": 1.0,
-  "exact_match": 0.73,
-  "hallucination_rate": 0.015180265654648957,
+  "exact_match": 0.7233333333333334,
+  "hallucination_rate": 0.015238095238095238,
   "micro": {
-    "precision": 0.9070208728652751,
-    "recall": 0.8385964912280702,
-    "f1": 0.8714676390154967,
+    "precision": 0.9028571428571428,
+    "recall": 0.8315789473684211,
+    "f1": 0.8657534246575342,
     "support": 570
   },
   "per_field": {
     "persons": {
-      "precision": 0.9659574468085106,
-      "recall": 0.941908713692946,
-      "f1": 0.9537815126050421,
+      "precision": 0.9658119658119658,
+      "recall": 0.9377593360995851,
+      "f1": 0.9515789473684211,
       "support": 241
     },
     "organizations": {
-      "precision": 0.8068965517241379,
+      "precision": 0.7959183673469388,
       "recall": 0.8125,
-      "f1": 0.8096885813148789,
+      "f1": 0.8041237113402061,
       "support": 144
     },
     "locations": {
-      "precision": 0.9115646258503401,
-      "recall": 0.7243243243243244,
-      "f1": 0.8072289156626506,
+      "precision": 0.9097222222222222,
+      "recall": 0.7081081081081081,
+      "f1": 0.7963525835866261,
       "support": 185
     }
   },
   "micro_f1_ci95": [
-    0.8394618834080717,
-    0.9008695652173914
+    0.8336594911937377,
+    0.895674300254453
   ],
   "error_summary": {
     "invalid_json": 0,
     "hallucination": 8,
-    "wrong_field": 15,
+    "wrong_field": 16,
     "boundary": 6,
-    "spurious": 20,
-    "missed": 71
+    "spurious": 21,
+    "missed": 74
   },
   "system": "qlora",
   "split": "val",
   "k_shots": 0,
-  "seconds_per_example": 0.36926316024333344
+  "seconds_per_example": 0.36958862620333394
 }

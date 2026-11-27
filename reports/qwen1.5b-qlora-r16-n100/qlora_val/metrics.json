@@ -46,5 +46,5 @@
   "system": "qlora",
   "split": "val",
   "k_shots": 0,
-  "seconds_per_example": 0.3319237671800003
+  "seconds_per_example": 0.335177729533331
 }

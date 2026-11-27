@@ -6,7 +6,10 @@ variant A. Specification: [docs/CAHIER_DES_CHARGES.md](docs/CAHIER_DES_CHARGES.m
 
 ## Quick start
 
-**On Colab / Kaggle (T4 GPU):** open `notebooks/main.ipynb`, set `REPO_URL`, run all.
+**On Colab / Kaggle (T4 GPU):** open `notebooks/main.ipynb` in a **fresh runtime** (a reused kernel
+keeps an already-imported `llmx` in memory), then run all. The test locks of the submitted run are
+committed in `reports/test_locks/`: re-running section 6 raises `HoldoutAlreadyUsedError` by design.
+Delete that folder only to reproduce the whole protocol from scratch.
 
 **From the command line:**
 
@@ -23,6 +26,20 @@ python -m llmx evaluate --system qlora --adapter --split test   # ONCE, at the v
 ```
 
 Add `--limit 20` to any validation run for a quick smoke test.
+
+## Results
+
+Test set: 500 CoNLL-2003 sentences, each system scored **once**. Final QLoRA configuration
+(3 epochs) chosen beforehand on validation. Colab T4, commit `d2c2e78`.
+
+| System | micro-F1 [95 % CI] | exact match | strict JSON | schema valid | hallucinations | s / sentence |
+|---|---|---|---|---|---|---|
+| zero-shot | 0.393 [0.354, 0.431] | 0.256 | 0 % | 96.8 % | 16.6 % | 0.18 |
+| few-shot (3 examples) | 0.580 [0.545, 0.615] | 0.330 | 99.8 % | 65.2 % | 5.1 % | 0.20 |
+| **QLoRA r=16, 3 epochs** | **0.902 [0.880, 0.921]** | **0.826** | **100 %** | **100 %** | **0.8 %** | 0.30 |
+
+Training touches 1.2 % of the parameters (18.5 M), takes 20 min on a T4, and produces a 74 MB
+adapter. Figures are in `reports/`; the critical analysis (in French) is section 7 of the notebook.
 
 ## Architecture
 
@@ -46,7 +63,7 @@ src/llmx/
   training/sft.py        GPU: answer-only loss masking + HF Trainer
   pipeline.py            use cases called by both the CLI and the notebook
   cli.py
-tests/                   32 CPU unit tests + 3 tokenizer/collator tests that run where torch is installed
+tests/                   41 unit tests (the tokenizer/collator ones are skipped without torch)
 notebooks/main.ipynb     orchestration + figures + written analysis
 ```
 

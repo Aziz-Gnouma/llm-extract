@@ -46,5 +46,5 @@
   "system": "zero_shot",
   "split": "val",
   "k_shots": 0,
-  "seconds_per_example": 0.18639512012
+  "seconds_per_example": 0.18189527010000045
 }

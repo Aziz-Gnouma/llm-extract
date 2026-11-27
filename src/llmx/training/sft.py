@@ -81,6 +81,10 @@ def train(
 ) -> dict[str, Any]:
     """Fine-tune, save the best adapter (lowest val loss) and return a training report."""
     fields = cfg.data.fields
+    if torch.cuda.is_available():
+        # max_memory_allocated is a process-wide high-water mark: reset it so the report
+        # gives this run's peak, not the max over every run in the same kernel.
+        torch.cuda.reset_peak_memory_stats()
     tokenizer = load_tokenizer(cfg.model)
     model = attach_lora(load_base_model(cfg.model), cfg.lora)
     params = count_parameters(model)
