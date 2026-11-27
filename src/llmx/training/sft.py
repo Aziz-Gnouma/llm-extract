@@ -19,6 +19,7 @@ from llmx.config import ProjectConfig
 from llmx.data.conll import Record
 from llmx.data.prompts import build_training_messages
 from llmx.modeling.loader import attach_lora, count_parameters, load_base_model, load_tokenizer
+from llmx.training.schedule import effective_eval_steps, total_optimizer_steps
 
 IGNORE_INDEX = -100
 
@@ -88,6 +89,8 @@ def train(
     val_ds, dropped_val = _tokenize_all(val_records, tokenizer, fields, cfg.model.max_seq_len)
 
     t = cfg.train
+    total_steps = total_optimizer_steps(len(train_ds), t.batch_size, t.grad_accum, t.epochs)
+    eval_steps = effective_eval_steps(total_steps, t.eval_steps)
     args = TrainingArguments(
         output_dir=str(cfg.run_output_dir / "checkpoints"),
         num_train_epochs=t.epochs,
@@ -99,9 +102,9 @@ def train(
         warmup_ratio=t.warmup_ratio,
         logging_steps=t.logging_steps,
         eval_strategy="steps",
-        eval_steps=t.eval_steps,
+        eval_steps=eval_steps,
         save_strategy="steps",
-        save_steps=t.eval_steps,
+        save_steps=eval_steps,
         save_total_limit=t.save_total_limit,
         load_best_model_at_end=True,
         metric_for_best_model="eval_loss",
@@ -136,6 +139,8 @@ def train(
         "parameters": params,
         "n_train": len(train_ds),
         "n_val": len(val_ds),
+        "total_steps": total_steps,
+        "eval_steps": eval_steps,
         "dropped_too_long": {"train": dropped_train, "val": dropped_val},
         "best_checkpoint": trainer.state.best_model_checkpoint,
         "best_eval_loss": trainer.state.best_metric,
