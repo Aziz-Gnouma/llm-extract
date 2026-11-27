@@ -12,4 +12,6 @@ data/raw/
 # CoNLL-2003 text (Reuters) is not redistributed: splits are regenerated with
 # `python -m llmx prepare`; manifest.json (counts + SHA-256) is versioned to prove they match.
 data/processed/*.jsonl
+reports/smoke/
+reports/smoke_log.txt
 # reports/ IS versioned: metrics, predictions summaries and figures of the runs

@@ -17,7 +17,7 @@ dependencies = [
 # (it matches their CUDA driver). Exact resolved versions are logged by the notebook.
 ml = [
     "transformers>=4.46,<5",
-    "peft>=0.13",
+    "peft>=0.13,<1.0",  # peft 1.0 drops transformers<5.6
     "bitsandbytes>=0.44",
     "accelerate>=1.0",
     "datasets>=3.0",
